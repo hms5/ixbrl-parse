@@ -127,24 +127,11 @@ class ixtDateFormat(ixbrlFormat):  # noqa: N801
         return self.date_format
 
     def parse_value(self, value: Union[str, int, float]) -> Optional[datetime.date]:
+        # Directly return the input value as a string, bypassing date parsing
         if isinstance(value, str):
-            value = value.lower()
-            # remove ordinal suffixes with regex
-            value = DATE_ORDINAL_SUFFIX_REGEX.sub(r"\1", value)
-            date_formats = self._get_date_formats()
-            error: Optional[Exception] = None
-            for date_format in date_formats:
-                try:
-                    return datetime.datetime.strptime(value, date_format).astimezone().date()
-                except ValueError as e:
-                    error = e
-                    continue
-            # if we get here, we couldn't parse the date. Raise the last error
-            if error:  # pragma: no cover
-                raise error
-        msg = f"Could not parse value {value} as a date"
-        warnings.warn(msg, stacklevel=2)
-        return None
+            return value  # return string directly
+        # Handle non-string values as before, or adjust as needed
+        return super().parse_value(value)
 
 
 class ixtDateLongUK(ixtDateFormat):  # noqa: N801
