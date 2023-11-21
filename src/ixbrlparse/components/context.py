@@ -1,6 +1,6 @@
 import datetime
 from copy import deepcopy
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Union, Optional
 
 
 class ixbrlContext:  # noqa: N801
