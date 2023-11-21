@@ -28,19 +28,18 @@ class ixbrlContext:  # noqa: N801
         self.id = _id
         self.entity = entity
         self.segments = segments
-        self.instant: Optional[datetime.date] = None
-        self.startdate: Optional[datetime.date] = None
-        self.enddate: Optional[datetime.date] = None
+        self.instant = self._parse_date(instant)
+        self.startdate = self._parse_date(startdate)
+        self.enddate = self._parse_date(enddate)
 
-        date_fields = {
-            "instant": instant,
-            "startdate": startdate,
-            "enddate": enddate,
-        }
-        for field, value in date_fields.items():
-            if value:
-                datevalue = datetime.datetime.strptime(value.strip(), "%Y-%m-%d").astimezone().date()
-                setattr(self, field, datevalue)
+    def _parse_date(self, date_str: Optional[str]) -> Optional[Union[datetime.date, str]]:
+        """Parse a date string and return the date object or the original string if invalid."""
+        if date_str:
+            try:
+                return datetime.datetime.strptime(date_str.strip(), "%Y-%m-%d").astimezone().date()
+            except ValueError:
+                return date_str.strip()
+        return None
 
     def __repr__(self) -> str:
         if self.startdate and self.enddate:
